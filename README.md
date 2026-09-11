@@ -262,8 +262,8 @@ Add your solution in the next lines:
     MEMBER_NICKNAME,
     SUBJECT,
     THREAD_REF
-)
-VALUES (
+  )
+   VALUES (
     'ABC123',                          -- Varchar
     676767,                             -- Number
     'ALL good baby',              -- Varchar
@@ -272,7 +272,7 @@ VALUES (
     'Nicolas',                   -- Varchar
     'Sujet du message',                -- Varchar
     99999                               -- Number
-);
+   );
   ```
 * Command to execute to update this model (but only this model, not all the models):
   ```
