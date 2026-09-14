@@ -1,0 +1,70 @@
+models:
+  - name: silver_airports_comments
+    description: Cleansed table which comments about airports.
+    columns:
+     - name: comment_id
+       description: Primary key
+       data_tests:
+         - unique
+         - not_null
+
+     - name: airport_ident
+       description:  airport indentifiant
+       data_tests:
+         - not_null
+         - relationships:
+             arguments:
+               to: ref('silver_airports')
+               field: airport_ident
+               config:
+                severity: warn
+
+  - name: silver_airports
+    description: Cleansed table which contains airports information
+    columns:
+      - name: airport_ident
+        description: Primary key
+        data_tests:
+          - unique
+          - not_null
+      
+      - name: airport_type
+        description: '{{doc("airports_type")}}'
+        data_type: string
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['medium_airport',
+                         'large_airport',
+                         'closed',
+                         'heliport',
+                         'small_airport',
+                         'balloonport',
+                         'seaplane_base']
+   
+
+  - name: silver_runways
+    columns:
+     - name: airport_ident
+       description:  airport indentifiant
+       data_tests:
+         - not_null
+         - relationships:
+             arguments:
+               to: ref('silver_airports')
+               field: airport_ident
+               config:
+                severity: warn
+     - name: runway_closed
+       tests:
+         - dbt_expectations.expect_column_values_to_be_in_set:
+             value_set: [1,0]
+     - name: runway_width_ft
+       tests:
+         - dbt_expectations.expect_column_values_to_be_between:
+             min_value: 0  # (Optional)
+     - name: runway_length_ft
+       tests:
+         - dbt_expectations.expect_column_values_to_be_between:
+             min_value: 0  # (Optional)

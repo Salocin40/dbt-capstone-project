@@ -1,0 +1,22 @@
+sources:
+  - name: airstats
+    schema: raw
+    tables:
+      - name: airports
+        identifier: airports
+        columns:
+          - name: id
+            data_tests:
+              - unique
+      - name: airport_comments
+        identifier: airport_comments
+        columns:
+          - name: id
+            data_tests:
+              - unique
+      - name: runways
+        identifier: runways
+        columns:
+          - name: id
+            data_tests:
+              - unique
