@@ -135,6 +135,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
+set-env.ps1
 .env
 .envrc
 .venv
@@ -212,6 +213,7 @@ CLAUDE.md
 
 # dbt
 target/
+target-prod/
 dbt_packages/
 dbt_internal_packages/
 package-lock.yml

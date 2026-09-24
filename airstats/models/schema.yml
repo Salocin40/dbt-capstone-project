@@ -1,33 +1,68 @@
 models:
+  - name: dim_location
+    description: Dimension containing the geographic attributes shared by airports.
+    columns:
+      - name: location_id
+        description: Deterministic key for a continent, country, and region combination.
+        data_tests:
+          - unique
+          - not_null
+      - name: continent
+        data_tests:
+          - not_null
+      - name: iso_country
+        data_tests:
+          - not_null
+      - name: iso_region
+        data_tests:
+          - not_null
+
   - name: silver_airports_comments
     description: Cleansed table which comments about airports.
     columns:
-     - name: comment_id
-       description: Primary key
-       data_tests:
-         - unique
-         - not_null
+      - name: comment_id
+        description: Primary key
+        data_tests:
+          - unique
+          - not_null
 
-     - name: airport_ident
-       description:  airport indentifiant
-       data_tests:
-         - not_null
-         - relationships:
-             arguments:
-               to: ref('silver_airports')
-               field: airport_ident
-               config:
-                severity: warn
+      - name: airport_ident
+        description: airport indentifiant
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('silver_airports')
+                field: airport_ident
+                config:
+                  severity: warn
 
   - name: silver_airports
     description: Cleansed table which contains airports information
+    latest_version: 2
+    versions:
+      - v: 1
+        config:
+          alias: silver_airports
+      - v: 2
+        config:
+          alias: silver_airports_v2
+        columns:
+          - name: location_id
+            description: Foreign key to dim_location.
+            data_tests:
+              - not_null
+              - relationships:
+                  arguments:
+                    to: ref('dim_location')
+                    field: location_id
     columns:
       - name: airport_ident
         description: Primary key
         data_tests:
           - unique
           - not_null
-      
+
       - name: airport_type
         description: '{{doc("airports_type")}}'
         data_type: string
@@ -35,36 +70,32 @@ models:
           - not_null
           - accepted_values:
               arguments:
-                values: ['medium_airport',
-                         'large_airport',
-                         'closed',
-                         'heliport',
-                         'small_airport',
-                         'balloonport',
-                         'seaplane_base']
-   
+                values: ['medium_airport', 'large_airport', 'closed', 'heliport', 'small_airport', 'balloonport', 'seaplane_base']
 
   - name: silver_runways
     columns:
-     - name: airport_ident
-       description:  airport indentifiant
-       data_tests:
-         - not_null
-         - relationships:
-             arguments:
-               to: ref('silver_airports')
-               field: airport_ident
-               config:
-                severity: warn
-     - name: runway_closed
-       tests:
-         - dbt_expectations.expect_column_values_to_be_in_set:
-             value_set: [1,0]
-     - name: runway_width_ft
-       tests:
-         - dbt_expectations.expect_column_values_to_be_between:
-             min_value: 0  # (Optional)
-     - name: runway_length_ft
-       tests:
-         - dbt_expectations.expect_column_values_to_be_between:
-             min_value: 0  # (Optional)
+      - name: airport_ident
+        description: airport indentifiant
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('silver_airports')
+                field: airport_ident
+                config:
+                  severity: warn
+      - name: runway_closed
+        tests:
+          - dbt_expectations.expect_column_values_to_be_in_set:
+              arguments:
+                value_set: [1, 0]
+      - name: runway_width_ft
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+      - name: runway_length_ft
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
