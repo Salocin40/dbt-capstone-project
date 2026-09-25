@@ -7,9 +7,10 @@ locations as (
 )
 
 select
+    airport_id,
     airports.airport_ident,
     airports.airport_type,
-    airports.airport_name,
+    airports.airport_name as bidabidou,
     airports.airport_lat,
     airports.airport_long,
     locations.location_id

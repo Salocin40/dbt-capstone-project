@@ -1,8 +1,8 @@
 snapshots:
   - name: scd_silver_airports
-    relation:  ref('silver_airports')
+    relation: ref('silver_airports', version='3')
     config:
       schema: snapshots
-      unique_key: airport_ident
+      unique_key: airport_id
       strategy: check
       check_cols: all

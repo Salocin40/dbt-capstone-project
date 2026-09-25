@@ -20,10 +20,11 @@ snapshot-paths: ["snapshots"]
 clean-targets:         # directories to be removed by `dbt clean`
   - "target"
   - "dbt_packages"
+
 seeds:
   airstats:
     +schema: raw
-    +quote_columns: true
+    +quote_columns: false
 models:
   airstats:
     +materialized: view

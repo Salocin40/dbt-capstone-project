@@ -32,30 +32,15 @@ models:
           - not_null
           - relationships:
               arguments:
-                to: ref('silver_airports')
+                to: ref('silver_airports',v=3)
                 field: airport_ident
                 config:
                   severity: warn
 
   - name: silver_airports
     description: Cleansed table which contains airports information
-    latest_version: 2
-    versions:
-      - v: 1
-        config:
-          alias: silver_airports
-      - v: 2
-        config:
-          alias: silver_airports_v2
-        columns:
-          - name: location_id
-            description: Foreign key to dim_location.
-            data_tests:
-              - not_null
-              - relationships:
-                  arguments:
-                    to: ref('dim_location')
-                    field: location_id
+    latest_version: 3
+
     columns:
       - name: airport_ident
         description: Primary key
@@ -64,13 +49,49 @@ models:
           - not_null
 
       - name: airport_type
-        description: '{{doc("airports_type")}}'
+        description: '{{ doc("airports_type") }}'
         data_type: string
         data_tests:
           - not_null
           - accepted_values:
               arguments:
                 values: ['medium_airport', 'large_airport', 'closed', 'heliport', 'small_airport', 'balloonport', 'seaplane_base']
+
+      - name: location_id
+        description: Foreign key to dim_location.
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_location')
+              field: location_id
+
+      - name: airport_id
+        description: New primary key for the silver_airports table, generated using a surrogate key.
+        data_tests:
+          - unique
+          - not_null
+
+    versions:
+      - v: 1
+        deprecation_date: 2026-09-24
+        config:
+          alias: silver_airports_v1
+        columns:
+          - include: '*'
+            exclude: [location_id, airport_id]
+
+      - v: 2
+        config:
+          alias: silver_airports_v2
+        columns:
+          - include: '*'
+            exclude: [airport_id]
+
+      - v: 3
+        config:
+          alias: silver_airports_v3
+        columns:
+          - include: '*'
 
   - name: silver_runways
     columns:

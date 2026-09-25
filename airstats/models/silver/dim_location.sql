@@ -13,7 +13,7 @@ locations as (
             coalesce(iso_country, ''),
             coalesce(iso_region, '')
         )) as location_id,
-        continent as continentt,
+        continent as continent,
         iso_country,
         iso_region
     from airport_locations
